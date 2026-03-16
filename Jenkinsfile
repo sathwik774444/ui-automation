@@ -71,8 +71,8 @@ pipeline {
 
         stage('Create Reports Directory') {
             steps {
-                bat "mkdir %REPORTS_DIR% 2>nul || echo Directory already exists"
-                bat "mkdir %ALLURE_RESULTS_DIR% 2>nul || echo Directory already exists"
+                bat 'if not exist "%REPORTS_DIR%" mkdir "%REPORTS_DIR%"'
+                bat 'if not exist "%ALLURE_RESULTS_DIR%" mkdir "%ALLURE_RESULTS_DIR%"'
             }
         }
 
