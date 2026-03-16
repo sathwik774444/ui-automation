@@ -31,10 +31,10 @@ pipeline {
             steps {
                 script {
                     // Check if Python is available
-                    sh 'python --version || python3 --version'
+                    bat 'python --version || python3 --version'
                     
                     // Create virtual environment
-                    sh 'python -m venv venv || python3 -m venv venv'
+                    bat 'python -m venv venv || python3 -m venv venv'
                     
                     // Activate virtual environment and install dependencies
                     if (isUnix()) {
