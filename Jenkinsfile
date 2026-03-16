@@ -58,12 +58,12 @@ pipeline {
             steps {
                 script {
                     echo "Starting Selenium Grid..."
-                    sh 'docker-compose up -d'
+                    bat 'docker-compose up -d'
                     
                     // Wait for Selenium Hub to be ready
-                    sh '''
+                    bat '''
                         echo "Waiting for Selenium Hub to be ready..."
-                        timeout 60 bash -c "until curl -f ${SELENIUM_HUB_URL}/status; do sleep 2; done"
+                        timeout 60 powershell -Command "do { Start-Sleep 2; try { Invoke-WebRequest -Uri %SELENIUM_HUB_URL%/status -UseBasicParsing -TimeoutSec 5; exit 0 } catch { exit 1 } } while ($lastexitcode -ne 0)"
                         echo "Selenium Hub is ready!"
                     '''
                 }
@@ -72,8 +72,8 @@ pipeline {
 
         stage('Create Reports Directory') {
             steps {
-                sh "mkdir -p ${REPORTS_DIR}"
-                sh "mkdir -p ${ALLURE_RESULTS_DIR}"
+                bat "mkdir %REPORTS_DIR% 2>nul || echo Directory already exists"
+                bat "mkdir %ALLURE_RESULTS_DIR% 2>nul || echo Directory already exists"
             }
         }
 
@@ -211,7 +211,7 @@ pipeline {
         cleanup {
             script {
                 echo 'Stopping Selenium Grid...'
-                sh 'docker-compose down || true'
+                bat 'docker-compose down || true'
                 
                 // Clean up workspace (optional)
                 cleanWs()
