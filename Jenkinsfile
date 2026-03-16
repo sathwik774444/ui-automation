@@ -63,8 +63,7 @@ pipeline {
                     // Wait for Selenium Hub to be ready
                     bat '''
                         echo "Waiting for Selenium Hub to be ready..."
-                        timeout 60 powershell -Command "do { Start-Sleep 2; try { Invoke-WebRequest -Uri %SELENIUM_HUB_URL%/status -UseBasicParsing -TimeoutSec 5; exit 0 } catch { exit 1 } } while ($lastexitcode -ne 0)"
-                        echo "Selenium Hub is ready!"
+                        powershell -Command "try { $timeout = 60; $start = Get-Date; do { Start-Sleep 2; try { Invoke-WebRequest -Uri http://localhost:4444/status -UseBasicParsing -TimeoutSec 5; Write-Host 'Selenium Hub is ready!'; exit 0 } catch { if ((Get-Date) -lt $start.AddSeconds($timeout)) { continue } else { exit 1 } } } while ($true) } catch { exit 1 }"
                     '''
                 }
             }
